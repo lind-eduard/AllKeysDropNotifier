@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', function() {
       if(savedTable) {
         for(let string=0; string < getAmountOfSavedGames(savedTable); string++) {
           const oneGameObject = JSON.parse(Object.values(savedTable)[string]);
-          alert(oneGameObject)
           tr = table.insertRow(-1);
           for(let column=0; column < 3; column++) {
             var td = document.createElement('td');          // TABLE DEFINITION.
