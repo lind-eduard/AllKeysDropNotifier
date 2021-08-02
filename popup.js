@@ -4,12 +4,10 @@ document.addEventListener('DOMContentLoaded', function() {
   let gameIdString;
   let gameId;
   
-  const checkPageButton = document.getElementById('addGameAlert');
-  checkPageButton.addEventListener('click', function() { 
+  const addGameButton = document.getElementById('addGameAlert');
+  addGameButton.addEventListener('click', function() { 
       var highestPrice = document.getElementById('lowestPriceInput').value;
-      var gameName = document.getElementById('gameNameToAdd').innerHTML;
-      document.getElementById('lowestPrice').innerHTML = highestPrice + ' euro';
-      document.getElementById('gameName').innerHTML = document.getElementById('gameNameToAdd').innerHTML;
+      var gameName = (document.getElementById('gameNameToAdd').innerHTML).trim();
       document.getElementById('lowestPriceInput').value = "";
       chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {message: "get_id_string"}, function(response) {
@@ -19,28 +17,68 @@ document.addEventListener('DOMContentLoaded', function() {
         });
       });
   }, false);
+
+  const savedGamesList = document.getElementById('listOfSavedGames');
+  savedGamesList.addEventListener('click', function() {
+    var table = document.getElementById('savedGamesTable');
+    chrome.storage.sync.get(["GamesList"], (result) => {
+      var savedTable = result["GamesList"];
+      if(savedTable) {
+        for(let string=0; string < getAmountOfSavedGames(savedTable); string++) {
+          const oneGameObject = JSON.parse(Object.values(savedTable)[string]);
+          alert(oneGameObject)
+          tr = table.insertRow(-1);
+          for(let column=0; column < 3; column++) {
+            var td = document.createElement('td');          // TABLE DEFINITION.
+                td = tr.insertCell(-1);
+                td.innerHTML = Object.values(oneGameObject)[column]; 
+          }
+        }
+      }
+  });	
   }, false);
 
+  const clearButton = document.getElementById('clearList');
+  clearButton.addEventListener('click', function() { 
+    chrome.storage.sync.set({ "GamesList": [] }, function(){
+      console.log('table reset');
+  });
+}, false);
+
+}, false);
+
 function setGameName(gameName){
-  document.getElementById('gameNameToAdd').innerHTML = gameName
+  document.getElementById('gameNameToAdd').innerHTML = gameName[0].result;
 }
 
 async function saveGame(gameId, gameName, highestPrice) {
-  chrome.storage.local.get(["GamesList"], (result) => {
+  chrome.storage.sync.get(["GamesList"], (result) => {
       var savedTable = result["GamesList"];
-      savedTable.push(`{id: "${gameId}", name: "${gameName}", price: "${highestPrice}"}`);
+      if(!savedTable) {
+        savedTable = [];
+      }
+      savedTable.push(`{"id": "${gameId}", "name": "${gameName}", "price": "${highestPrice}"}`);
       chrome.storage.sync.set({ "GamesList": savedTable }, function(){
         console.log('table saved');
-        alert(savedTable);
     });
-    });
-  }
+  });
+}
 
 function getAndAssignGameName() {
   chrome.tabs.query({active: true}, function(tabs) {
       var tab = tabs[0];
-      chrome.tabs.executeScript(tab.id, {
-        code: 'document.querySelector("h1 span[data-itemprop=\'name\']").innerHTML'
+      chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        function: getGameName
       }, setGameName);
     });
+}
+
+function getGameName() {
+  var name = document.querySelector("h1 span[data-itemprop=\'name\']").innerHTML;
+  return name;
+}
+
+function getAmountOfSavedGames( savedGames ) {
+  return Object.keys(savedGames).length;
 }

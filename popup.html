@@ -7,16 +7,19 @@
   <body>
     <h1>AllKeysShop Notifier</h1>
     <div>
-        <label id="gameNameToAdd">111</label>
+        <label id="gameNameToAdd"></label>
         <input type="text" id="lowestPriceInput">
     </div>
     <div>
+      <p></p>
         <button id="addGameAlert">add to list</button>
+        <button id="clearList">clear list</button>
+      <p></p>
     </div>
     <div>
-        <details>
+        <details id="listOfSavedGames">
             <summary>List of current alarms</summary>
-            <table>
+            <table id="savedGamesTable">
                 <thead>
                     <tr>
                         <th>GameID</th>
@@ -25,12 +28,6 @@
                     </tr>
                 </thead>
             </table>
-            <div>
-                <label id="gameName">Dark Alliance: </label>
-                <label id="lowestPrice">20 E </label>
-                <label id="deleteGameAlert">| x |</label>
-            </div>
-
           </details>
     </div>
   </body>
