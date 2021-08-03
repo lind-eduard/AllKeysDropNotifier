@@ -20,26 +20,47 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const savedGamesList = document.getElementById('listOfSavedGames');
   savedGamesList.addEventListener('click', function() {
-    if(savedGamesList.hasAttribute("open")){
       var table = document.getElementById('savedGamesTable');
-      chrome.storage.sync.get(["GamesList"], (result) => {
+      chrome.storage.sync.get(["GamesList"], async (result) => {
         var savedTable = result["GamesList"];
         if(savedTable) {
           for(let string=0; string < getAmountOfSavedGames(savedTable); string++) {
             const oneGameObject = JSON.parse(Object.values(savedTable)[string]);
+            var gameID = Object.values(oneGameObject)[0];
             tr = table.insertRow(-1);
-            for(let column=0; column < 3; column++) {
-              var td = document.createElement('td');
+            for(let column=0; column < 5; column++) {
+              switch(column) {
+                case 3:
+                {
+                  var td = document.createElement('td');
                   td = tr.insertCell(-1);
-                  td.innerHTML = Object.values(oneGameObject)[column]; 
+                  await fetch(`https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameID}&currency=eur&region=&moreq=&use_beta_offers_display=1`)
+                    .then(response => response.json())
+                    .then(data => {
+                      const currentPrice = data.offers[0].price.eur.price;
+                      td.innerHTML = currentPrice;
+                    });
+                  break;
+                }
+                case 4:
+                {
+                  var td = document.createElement('td');
+                  td = tr.insertCell(-1);
+                  td.innerHTML = '<button>Delete from list</button>';
+                  break; 
+                }
+                default:
+                {
+                  var td = document.createElement('td');
+                  td = tr.insertCell(-1);
+                  td.innerHTML = Object.values(oneGameObject)[column];
+                  break; 
+                }
+              } 
             }
           }
         }
       });
-    } else {
-      // delete table on close
-    }
-	
   }, false);
   
   const clearButton = document.getElementById('clearList');
