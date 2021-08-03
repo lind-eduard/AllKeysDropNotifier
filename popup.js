@@ -20,29 +20,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const savedGamesList = document.getElementById('listOfSavedGames');
   savedGamesList.addEventListener('click', function() {
-    var table = document.getElementById('savedGamesTable');
-    chrome.storage.sync.get(["GamesList"], (result) => {
-      var savedTable = result["GamesList"];
-      if(savedTable) {
-        for(let string=0; string < getAmountOfSavedGames(savedTable); string++) {
-          const oneGameObject = JSON.parse(Object.values(savedTable)[string]);
-          tr = table.insertRow(-1);
-          for(let column=0; column < 3; column++) {
-            var td = document.createElement('td');          // TABLE DEFINITION.
-                td = tr.insertCell(-1);
-                td.innerHTML = Object.values(oneGameObject)[column]; 
+    if(savedGamesList.hasAttribute("open")){
+      var table = document.getElementById('savedGamesTable');
+      chrome.storage.sync.get(["GamesList"], (result) => {
+        var savedTable = result["GamesList"];
+        if(savedTable) {
+          for(let string=0; string < getAmountOfSavedGames(savedTable); string++) {
+            const oneGameObject = JSON.parse(Object.values(savedTable)[string]);
+            tr = table.insertRow(-1);
+            for(let column=0; column < 3; column++) {
+              var td = document.createElement('td');
+                  td = tr.insertCell(-1);
+                  td.innerHTML = Object.values(oneGameObject)[column]; 
+            }
           }
         }
-      }
-  });	
+      });
+    } else {
+      // delete table on close
+    }
+	
   }, false);
-
+  
   const clearButton = document.getElementById('clearList');
   clearButton.addEventListener('click', function() { 
     chrome.storage.sync.set({ "GamesList": [] }, function(){
       console.log('table reset');
-  });
-}, false);
+    });
+  }, false);
 
 }, false);
 
