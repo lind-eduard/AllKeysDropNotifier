@@ -1,7 +1,8 @@
 <!doctype html>
-<html>
+<html class="root">
   <head>
     <title>AllKeysShop Notifier</title>
+    <link rel="stylesheet" href="style.css">
     <script src="popup.js"></script>
   </head>
   <body>
@@ -12,24 +13,34 @@
     </div>
     <div>
       <p></p>
-        <button id="addGameAlert">add to list</button>
-        <button id="clearList">clear list</button>
+        <button id="addGameAlert" class="small button">ADD TO LIST</button>
+
       <p></p>
     </div>
     <div>
         <details id="listOfSavedGames">
-            <summary>List of current alarms</summary>
-              <table id="savedGamesTable">
-                <thead>
-                  <tr>
-                    <th>GameID</th>
-                    <th>Game name</th>
-                    <th>Expected price</th>
-                    <th>Current price</th>
-                    <th>Delete from list</th>
-                  </tr>
-                </thead>
-              </table>
+          <summary>List of current alarms</summary>
+          <div>
+            <table id="savedGamesTable" class="styled-table">
+              <thead>
+                <tr>
+                  <th>GameID</th>
+                  <th>Game name</th>
+                  <th>Expected price in &euro;</th>
+                  <th>Current price in &euro;</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="savedGamesTableBody"></tbody>
+            </table>
+          </div>
+          <div class="container">
+            <div class="center">
+              <p></p>
+              <button id="clearList" class="small red button">CLEAR LIST</button>
+              <p></p>
+            </div>
+          </div>
           </details>
     </div>
     
