@@ -8,13 +8,16 @@ document.addEventListener('DOMContentLoaded', function() {
   const addGameButton = document.getElementById('addGameAlert');
   addGameButton.addEventListener('click', function() { 
       var highestPrice = document.getElementById('lowestPriceInput').value;
-      var gameName = (document.getElementById('gameNameToAdd').innerHTML).trim();
+      console.log(document.getElementById('gameNameToAdd').innerHTML)
+      var gameLabel = (document.getElementById('gameNameToAdd').innerHTML).match('\"(.*?)\"');
+      var gameName = gameLabel[1].trim();
       document.getElementById('lowestPriceInput').value = "";
       chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {message: "get_id_string"}, function(response) {
+        var gameLink = tabs[0].url;
+        chrome.tabs.sendMessage(tabs[0].id, {message: "get_id_string_and_link"}, function(response) {
           gameIdString = response.match('"([^;]*)"');
           gameId = gameIdString[1];
-          saveGame(gameId, gameName, highestPrice);
+          saveGame(gameId, gameName, highestPrice, gameLink);
         });
       });
   }, false);
@@ -47,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // delete single game from list
   document.querySelector('#savedGamesTableBody').addEventListener('click', async event => {
       var target = event.target;
-      if (target.tagName.toLowerCase() === 'button') {
+      if (target.tagName.toLowerCase() === 'img') {
         var cellOfButton = event.target.parentNode;
         var position = cellOfButton.parentNode.rowIndex
         deleteGameFromTableOnPosition(position);
@@ -71,16 +74,16 @@ function deleteGameFromTableOnPosition(position){
 
 
 function setGameName(gameName){
-  document.getElementById('gameNameToAdd').innerHTML = `Add "${gameName[0].result}" to list with max price:`;
+  document.getElementById('gameNameToAdd').innerHTML = `Add "${gameName[0].result.trim()}" to list with max price:`;
 }
 
-async function saveGame(gameId, gameName, highestPrice) {
+async function saveGame(gameId, gameName, highestPrice, gameLink) {
   chrome.storage.sync.get(["GamesList"], (result) => {
       var savedTable = result["GamesList"];
       if(!savedTable) {
         savedTable = [];
       }
-      savedTable.push(`{"id": "${gameId}", "name": "${gameName}", "price": "${highestPrice}"}`);
+      savedTable.push(`{"id": "${gameId}", "name": "${gameName}", "price": "${highestPrice}", "link": "${gameLink}"}`);
       chrome.storage.sync.set({ "GamesList": savedTable }, function(){
         console.log('table saved');
     });
@@ -113,34 +116,56 @@ async function showSavedTable(savedTable) {
     var gameID = Object.values(oneGameObject)[0];
     tr = table.insertRow(-1);
     tr.setAttribute('id', 'gameRow');
-    for(let column=0; column < 5; column++) {
+    for(let column=1; column < 5; column++) {
       switch(column) {
+          case 1:
+            {
+              var td = document.createElement('td');
+              td = tr.insertCell(-1);
+              gameName = Object.values(oneGameObject)[column]
+              gameLink = Object.values(oneGameObject)[3]
+              td.innerHTML = `<a href="${gameLink}">${gameName}</a>`;
+              break; 
+            }
+            case 2:
+              {
+                var td = document.createElement('td');
+                td = tr.insertCell(-1);
+                td.innerHTML = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(Object.values(oneGameObject)[column]);
+                break; 
+              }
         case 3:
-        {
-          var td = document.createElement('td');
-          td = tr.insertCell(-1);
-          await fetch(`https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameID}&currency=eur&region=&moreq=&use_beta_offers_display=1`)
-            .then(response => response.json())
-            .then(data => {
-              const currentPrice = data.offers[0].price.eur.price;
-              td.innerHTML = currentPrice;
-            });
-          break;
-        }
+          {
+            var td = document.createElement('td');
+            td = tr.insertCell(-1);
+            await fetch(`https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameID}&currency=eur&region=&moreq=&use_beta_offers_display=1`)
+              .then(response => response.json())
+              .then(data => {
+                var currentPrice = data.offers[0].price.eur.price;
+                var expectedPrice = parseFloat(Object.values(oneGameObject)[2]);
+                if(parseFloat(currentPrice) <= expectedPrice) {
+                  td.style.color = "green";
+                } else {
+                  td.style.color = "red";
+                }
+                td.innerHTML = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(currentPrice);
+              });
+            break;
+          }
         case 4:
-        {
-          var td = document.createElement('td');
-          td = tr.insertCell(-1);
-          td.innerHTML = '<button class="small red button">Delete</button>';
-          break; 
-        }
+          {
+            var td = document.createElement('td');
+            td = tr.insertCell(-1);
+            td.innerHTML = '<img src="close.png" alt="delete" width="20" height="20">';
+            break; 
+          }
         default:
-        {
-          var td = document.createElement('td');
-          td = tr.insertCell(-1);
-          td.innerHTML = Object.values(oneGameObject)[column];
-          break; 
-        }
+          {
+            var td = document.createElement('td');
+            td = tr.insertCell(-1);
+            td.innerHTML = Object.values(oneGameObject)[column];
+            break; 
+          }
       } 
     }
   }

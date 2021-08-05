@@ -1,21 +1,23 @@
 <!doctype html>
-<html class="root">
+<html lang="en">
   <head>
     <title>AllKeysShop Notifier</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="popup.js"></script>
   </head>
   <body>
-    <h2>AllKeysShop Notifier</h2>
-    <div>
-        <label id="gameNameToAdd"></label>
-        <input type="text" id="lowestPriceInput">
+    <div class="main">
+    <div class="container">
+      <h2>AllKeysShop Notifier</h2>
     </div>
-    <div>
-      <p></p>
-        <button id="addGameAlert" class="small button">ADD TO LIST</button>
-
-      <p></p>
+    <label id="gameNameToAdd"></label>
+    <div class="input-group mb-3">
+      <input id="lowestPriceInput" type="text" class="form-control" placeholder="Your maximal price for game" aria-label="Your maximal price for game" aria-describedby="basic-addon2">
+      <div class="input-group-append">
+        <button id="addGameAlert" class="btn btn-outline-secondary" type="button">ADD TO LIST</button>
+      </div>
     </div>
     <div>
         <details id="listOfSavedGames">
@@ -24,7 +26,6 @@
             <table id="savedGamesTable" class="styled-table">
               <thead>
                 <tr>
-                  <th>GameID</th>
                   <th>Game name</th>
                   <th>Expected price in &euro;</th>
                   <th>Current price in &euro;</th>
@@ -37,12 +38,12 @@
           <div class="container">
             <div class="center">
               <p></p>
-              <button id="clearList" class="small red button">CLEAR LIST</button>
+              <button id="clearList" class="btn btn-outline-danger">CLEAR LIST</button>
               <p></p>
             </div>
           </div>
-          </details>
+        </details>
     </div>
-    
+  </div>
   </body>
 </html>
