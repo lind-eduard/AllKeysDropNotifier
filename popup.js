@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-   // on load show name of current game
+  // on load show name of current game
   getAndAssignGameName();
   let gameIdString;
   let gameId;
@@ -58,6 +58,14 @@ document.addEventListener('DOMContentLoaded', function() {
     })
 
   }, false);
+
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if (request.msg === "show_notification") {
+
+        }
+    }
+);
 
 
 function deleteGameFromTableOnPosition(position){

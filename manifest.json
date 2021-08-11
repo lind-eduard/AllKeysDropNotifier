@@ -19,6 +19,10 @@
      "activeTab",
      "storage",
      "tabs", 
-     "scripting"
+     "scripting",
+     "contextMenus",
+     "management",
+     "notifications",
+     "alarms"
     ]
   }
