@@ -22,22 +22,20 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   }, false);
 
-  // show list of games
-  const savedGamesList = document.getElementById('listOfSavedGames');
-  savedGamesList.addEventListener('toggle', function() {
-    // show games
-    if (savedGamesList.open) {
-      chrome.storage.sync.get(["GamesList"], async (result) => {
-        var savedTable = result["GamesList"];
-        if(savedTable) {
-          await showSavedTable(savedTable);
-        }
-      });
-    }
-    if(!savedGamesList.open) {
-      document.getElementById("savedGamesTableBody").innerHTML ="";
-    }
-  }, false);
+   const savedGamesList = document.getElementById('collapseOne');
+  // show saved game
+  savedGamesList.addEventListener('show.bs.collapse', function () {
+    chrome.storage.sync.get(["GamesList"], async (result) => {
+      var savedTable = result["GamesList"];
+      if(savedTable) {
+        await showSavedTable(savedTable);
+      }
+    });
+  });
+  // cleanup table after collapsing
+  savedGamesList.addEventListener('hide.bs.collapse', function () {
+    document.getElementById("savedGamesTableBody").innerHTML ="";
+  });
 
   // clear list of games
   const clearButton = document.getElementById('clearList');
@@ -82,7 +80,11 @@ function deleteGameFromTableOnPosition(position){
 
 
 function setGameName(gameName){
-  document.getElementById('gameNameToAdd').innerHTML = `Add "${gameName[0].result.trim()}" to list with max price:`;
+  try{
+    document.getElementById('gameNameToAdd').innerHTML = `Add "${gameName[0].result.trim()}" to list with max price:`;
+  } catch(err) {
+
+  }
 }
 
 async function saveGame(gameId, gameName, highestPrice, gameLink) {
