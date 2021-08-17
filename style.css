@@ -5,13 +5,17 @@ body {
   vertical-align:middle;
 }
 
+body::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
+}
+
 .main {
-  margin: 15px;
+  margin: 10px;
 }
 
 .styled-table {
   border-collapse: collapse;
-  margin: 25px 0;
+  margin: 0px 0;
   font-size: 0.9em;
   font-family: sans-serif;
   min-width: 400px;
@@ -41,22 +45,20 @@ body {
   border-bottom: 2px solid #009879;
 }
 
-.centered {
-  margin:50px auto;
-  text-align:center;
+.table-button {
+  position: relative;
+  align-self: center;
 }
 
-
-
 .container {
-  width: 100%;
-  position: relative;
+  display: flex;
+  margin-top: 15px;
   justify-content: center;
   align-items: center;
 }
 
 .center {
-  margin: 0;
+  margin: 20px;
   position: absolute;
   left: 50%;
   -ms-transform: translate(-50%, -50%);
