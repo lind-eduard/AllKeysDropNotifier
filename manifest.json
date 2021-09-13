@@ -26,6 +26,7 @@
      "contextMenus",
      "management",
      "notifications",
-     "alarms"
+     "alarms",
+     "downloads"
     ]
   }

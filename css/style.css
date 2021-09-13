@@ -1,5 +1,5 @@
 body {
-  min-width: 470px;
+  min-width: 500px;
   max-width: 100%;
   position: relative;
   vertical-align:middle;
@@ -63,8 +63,18 @@ body::-webkit-scrollbar {
   left: 50%;
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
+  
+}
+
+.left-right {
+  width: 100%;
+  display:inline-block;
+  overflow: auto;
+  white-space: nowrap;
+  margin: 0px auto;
 }
 
 h2 {
   text-align: center;
 }
+

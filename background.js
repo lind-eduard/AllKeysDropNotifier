@@ -3,8 +3,17 @@ var myNotificationID;
 
 chrome.runtime.onStartup.addListener(function() {
   checkGamesAndSendNotification();
-  chrome.alarms.create("gameCheckAlarm", {delayInMinutes: 60.0, periodInMinutes: 60.0} );
-})
+  chrome.storage.sync.get(["notificationPeriod"], async (result) => {
+    var notificationPeriodInMinutes = result["notificationPeriod"];
+    if(!notificationPeriodInMinutes) {
+      notificationPeriodInMinutes = 180.0;
+      chrome.storage.sync.set({ "notificationPeriod": 180.0 }, function(){
+        console.log('table saved');
+      });
+    }
+  });
+  chrome.alarms.create("gameCheckAlarm", {delayInMinutes: parseFloat(notificationPeriodInMinutes), periodInMinutes: notificationPeriodInMinutes});
+});
 
 chrome.alarms.onAlarm.addListener(function(){
   checkGamesAndSendNotification();
@@ -31,16 +40,16 @@ function checkGamesAndSendNotification() {
       return;
     }
     for(let string=0; string < getAmountOfSavedGames(savedTable); string++) {
-        const oneGameObject = JSON.parse(Object.values(savedTable)[string]);
-        var gameID = Object.values(oneGameObject)[0];
-        var gameName = Object.values(oneGameObject)[1];
-        gameLink = Object.values(oneGameObject)[3];
+        const oneGameObject = savedTable[string];
+        var gameID = oneGameObject.id;
+        var gameName = oneGameObject.name;
+        gameLink = oneGameObject.link;
         await fetch(`https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameID}&currency=eur&region=&moreq=&use_beta_offers_display=1`)
         .then(response => response.json())
         .then(data => {
           var currentPrice = data.offers[0].price.eur.price;
-          var expectedPrice = parseFloat(Object.values(oneGameObject)[2]);
-          if(parseFloat(currentPrice) <= expectedPrice) {
+          var expectedPrice = parseFloat(oneGameObject.price);
+          if(parseFloat(currentPrice) <= expectedPrice && oneGameObject.notificationEnabled) {
             chrome.notifications.create('', {
               title: 'Price just droped for game:',
               message: `${gameName}`,
