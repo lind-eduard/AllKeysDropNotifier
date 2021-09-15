@@ -1,115 +1,163 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <title>AllKeysShop Notifier</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" >
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/bootstrap.css">
-    <script src="scripts/bootstrap.min.js"></script>
-    <script src="scripts/popup.js"></script>
-    <script src="scripts/notifications.js"></script>
-    <script src="scripts/gameList.js"></script>
-  </head>
-  <body>
-    <div class="main">
-      <div class="container">
-        <h2>AllKeysShop Notifier</h2>
+
+<head>
+  <title>AllKeysShop Notifier</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <script src="scripts/bootstrap.min.js"></script>
+  <script src="scripts/popup.js"></script>
+  <script src="scripts/notifications.js"></script>
+  <script src="scripts/gameList.js"></script>
+</head>
+
+<body>
+  <div class="main">
+    <div class="container">
+      <h2>AllKeysShop Notifier</h2>
+    </div>
+    <nav>
+      <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link active" id="nav-games-tab" data-bs-toggle="tab" data-bs-target="#nav-games"
+          type="button" role="tab" aria-controls="nav-games" aria-selected="true">Games</button>
+        <button class="nav-link" id="nav-notifications-tab" data-bs-toggle="tab" data-bs-target="#nav-notifications"
+          type="button" role="tab" aria-controls="nav-notifications" aria-selected="false">Notifications</button>
+        <button class="nav-link" id="nav-about-tab" data-bs-toggle="tab" data-bs-target="#nav-about" type="button"
+          role="tab" aria-controls="nav-about" aria-selected="false">About</button>
       </div>
-      <nav>
-        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-          <button class="nav-link active" id="nav-games-tab" data-bs-toggle="tab" data-bs-target="#nav-games" type="button" role="tab" aria-controls="nav-games" aria-selected="true">Games</button>
-          <button class="nav-link" id="nav-notifications-tab" data-bs-toggle="tab" data-bs-target="#nav-notifications" type="button" role="tab" aria-controls="nav-notifications" aria-selected="false">Notifications</button>
-        </div>
-      </nav>
-      <div class="tab-content" id="nav-tabContent">
-        <div class="tab-pane fade show active" id="nav-games" role="tabpanel" aria-labelledby="nav-games-tab">
-          <p></p>
-          <label id="gameNameToAdd"></label>
-          <div class="input-group mb-3">
-            <input id="lowestPriceInput" type="text" class="form-control" placeholder="Your maximal price for game" aria-label="Your maximal price for game" aria-describedby="basic-addon2">
-            <div class="input-group-append">
-              <button id="addGameAlert" class="btn btn-outline-secondary" type="button">ADD TO LIST</button>
-            </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade show active" id="nav-games" role="tabpanel" aria-labelledby="nav-games-tab">
+        <p></p>
+        <label id="gameNameToAdd"></label>
+        <div class="input-group mb-3">
+          <input id="lowestPriceInput" type="text" class="form-control" placeholder="Your maximal price for game"
+            aria-label="Your maximal price for game" aria-describedby="basic-addon2">
+          <div class="input-group-append">
+            <button id="addGameAlert" class="btn btn-outline-secondary" type="button">ADD TO LIST</button>
           </div>
-          <div class="accordion" id="accordionExample">
-            <div class="accordion-item">
-              <h3 class="accordion-header" id="headingOne">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                  SHOW SAVED GAMES
-                </button>
-              </h3>
-              <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                    <div>
-                      <table id="savedGamesTable" class="styled-table">
-                        <thead>
-                          <tr>
-                            <th>Game name</th>
-                            <th>Expected price in &euro;</th>
-                            <th>Current price in &euro;</th>
-                            <th></th>
-                          </tr>
-                        </thead>
-                        <tbody id="savedGamesTableBody"></tbody>
-                      </table>
-                      <div class="row">
-                        <p></p>
-                        <div class="col d-flex justify-content-between">
-                          <button id="clearList" class="btn btn-outline-danger table-button">CLEAR LIST</button>
-                          <button id="saveList" class="btn btn-primary">SAVE LIST</button>
-                          <label for="uploadList" class="d-block">
-                            <div class="btn btn-primary btn-block">UPLOAD LIST</div>
-                            <input type="file" id="uploadList" name="uploadList" style="display:none">
-                          </label>
-                        </div>
-                      </div>
+        </div>
+        <div class="accordion" id="accordionExample">
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="headingOne">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                SHOW SAVED GAMES
+              </button>
+            </h3>
+            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+              data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                <div>
+                  <table id="savedGamesTable" class="styled-table">
+                    <thead>
+                      <tr>
+                        <th>Game name</th>
+                        <th>Expected price in &euro;</th>
+                        <th>Current price in &euro;</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody id="savedGamesTableBody"></tbody>
+                  </table>
+                  <div class="row">
+                    <p></p>
+                    <div class="col d-flex justify-content-between">
+                      <button id="clearList" class="btn btn-outline-danger table-button">CLEAR LIST</button>
+                      <button id="saveList" class="btn btn-primary">SAVE LIST</button>
+                      <label for="uploadList" class="d-block">
+                        <div class="btn btn-primary btn-block">UPLOAD LIST</div>
+                        <input type="file" id="uploadList" name="uploadList" style="display:none">
+                      </label>
                     </div>
                   </div>
                 </div>
               </div>
-          </div>
-        </div>
-        <div class="tab-pane fade" id="nav-notifications" role="tabpanel" aria-labelledby="nav-notifications-tab">
-          <p></p>
-          <h4>Notifications settings</h4>
-          <p></p>
-          <label id="notificationPeriodLabel" for="noficationTime">Current notification period(in minutes):</label>
-          <div class="input-group mb-3">
-            <input id="notificationPeriodInput" type="number" class="form-control" placeholder="Set notification period in minutes" aria-label="Set notification period in minutes" aria-describedby="basic-addon2">
-            <div class="input-group-append">
-              <button id="addNotificationPeriod" class="btn btn-outline-secondary" type="button">SUBMIT PERIOD</button>
             </div>
           </div>
-          <div class="accordion" id="accordionNotifications">
-            <div class="accordion-item">
-              <h3 class="accordion-header" id="headingOne">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNotifications" aria-expanded="false" aria-controls="collapseNotifications">
-                  SHOW NOTIFICATIONS FOR GAMES
-                </button>
-              </h3>
-              <div id="collapseNotifications" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionNotifications">
-                <div class="accordion-body">
-                    <div>
-                      <table id="notificationsTable" class="styled-table" cellpadding="0" cellspacing="0">
-                        <tbody id="notificationsTableBody">                         
-                        </tbody>
-                      </table>
-                      <p></p>
-                      <div class="left-right">
-                        <div style='float: left;'>
-                          <button id="clearList" class="btn btn btn-success table-button float-start">ENABLE ALL</button>
-                        </div>
-                        <div style='float: right;'>
-                          <button id="disableAllNotifications" class="btn btn-outline-danger table-button float-end" style='float: right;'>DISABLE ALL</button>
-                        </div>
-                      </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="nav-notifications" role="tabpanel" aria-labelledby="nav-notifications-tab">
+        <p></p>
+        <h4>Notifications settings</h4>
+        <p></p>
+        <label id="notificationPeriodLabel" for="noficationTime">Current notification period(in minutes):</label>
+        <div class="input-group mb-3">
+          <input id="notificationPeriodInput" type="number" class="form-control"
+            placeholder="Set notification period in minutes" aria-label="Set notification period in minutes"
+            aria-describedby="basic-addon2">
+          <div class="input-group-append">
+            <button id="addNotificationPeriod" class="btn btn-outline-secondary" type="button">SUBMIT PERIOD</button>
+          </div>
+        </div>
+        <div class="accordion" id="accordionNotifications">
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="headingOne">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapseNotifications" aria-expanded="false" aria-controls="collapseNotifications">
+                SHOW NOTIFICATIONS FOR GAMES
+              </button>
+            </h3>
+            <div id="collapseNotifications" class="accordion-collapse collapse" aria-labelledby="headingOne"
+              data-bs-parent="#accordionNotifications">
+              <div class="accordion-body">
+                <div>
+                  <table id="notificationsTable" class="styled-table" cellpadding="0" cellspacing="0">
+                    <tbody id="notificationsTableBody">
+                    </tbody>
+                  </table>
+                  <p></p>
+                  <div class="left-right">
+                    <div style='float: left;'>
+                      <button id="clearList" class="btn btn btn-success table-button float-start">ENABLE ALL</button>
+                    </div>
+                    <div style='float: right;'>
+                      <button id="disableAllNotifications" class="btn btn-outline-danger table-button float-end"
+                        style='float: right;'>DISABLE ALL</button>
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
           </div>
         </div>
+      </div>
+      <div class="tab-pane fade" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
+        <p></p>
+        <h4>About</h4>
+        <p></p>
+        <div class="accordion" id="accordionAbout">
+          <div class="accordion-item">
+            <h3 class="accordion-header" id="headingOne">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapseAbout" aria-expanded="false" aria-controls="collapseAbout">
+                SHOW BACKUP OPTINS
+              </button>
+            </h3>
+            <div id="collapseAbout" class="accordion-collapse collapse" aria-labelledby="headingOne"
+              data-bs-parent="#accordionAbout">
+              <div class="accordion-body">
+                <div class="row">
+                  <label for="loadBackup">CAUTION: Click on "LOAD BACKUP" will<b>REPLACE</b> current Game List with the
+                    Game List
+                    from backup. If you want to add backup list to current one. You need firstly save current game list
+                    locally,
+                    then make backup and then load saved list</label>
+                  <p></p>
+                  <div class="col d-flex justify-content-between">
+                    <button id="createBackup" class="btn btn-primary">CREATE BACKUP</button>
+                    <button id="loadBackup" class="btn btn-primary">LOAD BACKUP</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
-  </body>
+  </div>
+</body>
+
 </html>

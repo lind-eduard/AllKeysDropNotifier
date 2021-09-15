@@ -31,11 +31,8 @@ document.addEventListener('DOMContentLoaded', function() {
       if (target.tagName.toLowerCase() === 'input') {
         var cellOfButton = event.target.parentNode;
         var position = cellOfButton.parentNode.parentNode.rowIndex;
-        if(target.className.includes('checked')) {
-          setNotificationStatusForGameOnPosition(position, false);
-        } else {
-          setNotificationStatusForGameOnPosition(position, true);
-        }
+        console.log(target.checked);
+        setNotificationStatusForGameOnPosition(position, target.checked);
       }
   }, false);
 
@@ -44,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function setNotificationStatusForGameOnPosition(position, status){
   chrome.storage.sync.get(["GamesList"], (result) => {
       var savedTable = result["GamesList"];
+      console.log(status);
       savedTable[position].notificationEnabled = status;
       chrome.storage.sync.set({ "GamesList": savedTable }, function(){
         console.log('table saved');
@@ -80,10 +78,7 @@ async function showNotificationsTable(savedTable) {
             }
             default:
             {
-                var td = document.createElement('td');
-                td = tr.insertCell(-1);
-                td.innerHTML = Object.values(oneGameObject)[column];
-                break; 
+                console.log('something went wrong....')
             }
         } 
       }

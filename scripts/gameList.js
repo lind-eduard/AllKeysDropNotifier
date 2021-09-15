@@ -69,17 +69,29 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('uploadList').addEventListener('change', event => {
       var file = event.target.files[0];
       var reader = new FileReader()
+      reader.readAsText(file);
       reader.onload = function(e) {
-        console.log(e.target.result)
+        const uploadedTable = JSON.parse(e.target.result);
+        console.log(uploadedTable);
+        chrome.storage.sync.get(["GamesList"], (result) => {
+          var savedTable = result["GamesList"];
+          if(!savedTable) {
+            savedTable = [];
+          }
+          for(let i=0; i < uploadedTable.length; i++) {
+            savedTable.push({"id": `${uploadedTable[i].id}`, "name": `${uploadedTable[i].name}`, "price": `${uploadedTable[i].price}`, "link": `${uploadedTable[i].link}`, "notificationEnabled": uploadedTable[i].notificationEnabled});
+          }
+          chrome.storage.sync.set({ "GamesList": savedTable }, function(){
+            console.log('table saved');
+        });
+      });
       }
       reader.onerror = function(stuff) {
         console.log("error", stuff)
         console.log (stuff.getMessage())
       }
-      var uploadedTable = reader.readAsText(file);
-      console.log(uploadedTable);
     }, false);
-       
+    
   }, false);
 
 function getAmountOfSavedGames( savedGames ) {
