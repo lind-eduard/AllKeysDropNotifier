@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById("savedGamesTableBody").innerHTML ="";
     }, false);
 
-     // clear list of games
+    // clear list of games
     const clearButton = document.getElementById('clearList');
     clearButton.addEventListener('click', function() { 
       chrome.storage.sync.set({ "GamesList": [] }, function(){
@@ -86,9 +86,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
       });
       }
-      reader.onerror = function(stuff) {
-        console.log("error", stuff)
-        console.log (stuff.getMessage())
+      reader.onerror = function(error) {
+        console.log("error", error)
+        console.log (error.getMessage())
       }
     }, false);
     

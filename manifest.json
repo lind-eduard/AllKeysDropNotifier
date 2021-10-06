@@ -10,6 +10,7 @@
     },
     "content_scripts": [{
         "matches": ["*://*.allkeyshop.com/*"],
+        "run_at": "document_start",
         "js": ["contentScript.js"]
     }],
     "background": {
@@ -27,6 +28,7 @@
      "management",
      "notifications",
      "alarms",
-     "downloads"
+     "downloads",
+     "webNavigation"
     ]
   }

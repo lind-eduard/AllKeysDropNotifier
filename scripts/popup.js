@@ -6,10 +6,10 @@ document.addEventListener('DOMContentLoaded', function() {
 }, false);
 
 function setGameName(gameName){
-  try{
+  if(gameName[0].result) {
     document.getElementById('gameNameToAdd').innerHTML = `Add "${gameName[0].result.trim()}" to list with max price:`;
-  } catch(err) {
-
+  } else {
+    document.getElementById('addGameArea').style.display = 'none';
   }
 }
 

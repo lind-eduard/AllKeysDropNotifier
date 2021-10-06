@@ -19,6 +19,15 @@ chrome.alarms.onAlarm.addListener(function(){
   checkGamesAndSendNotification();
 });
 
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
+  console.log('load event received')
+  if(request.message ==="page_loaded") {
+    // gameList.js function
+    getAndAssignGameName();
+  }
+  return true;
+});
+
 chrome.notifications.onButtonClicked.addListener(function(notifId, btnIdx) {
   if (notifId === myNotificationID) {
       if (btnIdx === 0) {
@@ -71,3 +80,10 @@ function checkGamesAndSendNotification() {
     }
 });
 }
+
+
+chrome.webNavigation.onCommitted.addListener((details) => {
+  if (["reload", "link", "typed", "generated"].includes(details.transitionType)) {
+      console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+  }
+});
