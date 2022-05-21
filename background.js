@@ -19,23 +19,23 @@ chrome.alarms.onAlarm.addListener(function(){
   checkGamesAndSendNotification();
 });
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
-  console.log('load event received')
-  if(request.message ==="page_loaded") {
-    // gameList.js function
-    getAndAssignGameName();
-  }
-  return true;
-});
-
 chrome.notifications.onButtonClicked.addListener(function(notifId, btnIdx) {
-  if (notifId === myNotificationID) {
-      if (btnIdx === 0) {
-        chrome.tabs.create({url:gameLink}, function(tab){
-          chrome.windows.update(tab.windowId, {focused: true});
-        });
-      }
-  }
+  const gameIdFromNotification = notifId.slice(0, notifId.indexOf('_'));
+  console.log('ID: ', gameIdFromNotification)
+  if (btnIdx === 0) {
+      chrome.storage.sync.get(["GamesList"], async (result) => {
+        var savedTable = result["GamesList"];
+        for(let string=0; string < getAmountOfSavedGames(savedTable); string++) {
+          const oneGameObject = savedTable[string];
+          if (gameIdFromNotification === oneGameObject.id) {
+            chrome.tabs.create({url:oneGameObject.link}, function(tab){
+                chrome.windows.update(tab.windowId, {focused: true});
+            });
+            return;
+          }
+        }
+      });
+    }
 });
 
 function getAmountOfSavedGames( savedGames ) {
@@ -49,6 +49,7 @@ function checkGamesAndSendNotification() {
       return;
     }
     for(let string=0; string < getAmountOfSavedGames(savedTable); string++) {
+        const timestamp = Date.now();
         const oneGameObject = savedTable[string];
         var gameID = oneGameObject.id;
         var gameName = oneGameObject.name;
@@ -59,7 +60,7 @@ function checkGamesAndSendNotification() {
           var currentPrice = data.offers[0].price.eur.price;
           var expectedPrice = parseFloat(oneGameObject.price);
           if(parseFloat(currentPrice) <= expectedPrice && oneGameObject.notificationEnabled) {
-            chrome.notifications.create('', {
+            chrome.notifications.create(gameID + `_${timestamp}`, {
               title: 'Price just droped for game:',
               message: `${gameName}`,
               iconUrl: '/icon.png',
@@ -72,15 +73,12 @@ function checkGamesAndSendNotification() {
                     title: 'Close'
                 }
             ]
-            }, function(id) {
-              myNotificationID = id;
-          });
+            });
             }
         });
     }
 });
 }
-
 
 chrome.webNavigation.onCommitted.addListener((details) => {
   if (["reload", "link", "typed", "generated"].includes(details.transitionType)) {

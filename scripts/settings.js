@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+  
   // set new notification time
   const addNotificationPeriodButton = document.getElementById('addNotificationPeriod');
   addNotificationPeriodButton.addEventListener('click', function() {
@@ -10,23 +11,24 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }, false);
 
-    // show notification list
-    const notificationsList = document.getElementById('collapseNotifications');
-    notificationsList.addEventListener('show.bs.collapse', function () {
+    // show settings list
+    const settingsList = document.getElementById('collapseSettings');
+    settingsList.addEventListener('show.bs.collapse', function () {
       chrome.storage.sync.get(["GamesList"], async (result) => {
         var savedTable = result["GamesList"];
         if(savedTable) {
-          await showNotificationsTable(savedTable);
+          await showSettingsTable(savedTable);
         }
       });
     }, false);  
+
     // cleanup table after collapsing
-    notificationsList.addEventListener('hide.bs.collapse', function () {
-      document.getElementById("notificationsTableBody").innerHTML ="";
+    settingsList.addEventListener('hide.bs.collapse', function () {
+      document.getElementById("settingsTableBody").innerHTML ="";
     }, false);
 
     // disable notification for game
-    document.querySelector('#notificationsTableBody').addEventListener('click', event => {
+    document.querySelector('#settingsTableBody').addEventListener('click', event => {
       var target = event.target;
       if (target.tagName.toLowerCase() === 'input') {
         var cellOfButton = event.target.parentNode;
@@ -36,12 +38,41 @@ document.addEventListener('DOMContentLoaded', function() {
       }
   }, false);
 
+  // enable all notifications
+  const enableAllNotificationsButton = document.getElementById('enableAllNotifications');
+  enableAllNotificationsButton.addEventListener('click', function() {
+    chrome.storage.sync.get(["GamesList"], (result) => {
+      var savedTable = result["GamesList"];
+      for(let i=0; i < getAmountOfSavedGames(savedTable); i++) {
+        savedTable[i].notificationEnabled = true;
+      }
+      chrome.storage.sync.set({ "GamesList": savedTable }, function(){
+        console.log('table saved');
+      });
+      refreshSettingsList();
+    });
+  }, false);
+
+  // disable all notifications
+  const disableAllNotificationsButton = document.getElementById('disableAllNotifications');
+  disableAllNotificationsButton.addEventListener('click', function() {
+    chrome.storage.sync.get(["GamesList"], (result) => {
+      var savedTable = result["GamesList"];
+      for(let i=0; i < getAmountOfSavedGames(savedTable); i++) {
+        savedTable[i].notificationEnabled = false;
+      }
+      chrome.storage.sync.set({ "GamesList": savedTable }, function(){
+        console.log('table saved');
+      });
+      refreshSettingsList();
+    });
+  }, false);
+
 }, false);
 
 function setNotificationStatusForGameOnPosition(position, status){
   chrome.storage.sync.get(["GamesList"], (result) => {
       var savedTable = result["GamesList"];
-      console.log(status);
       savedTable[position].notificationEnabled = status;
       chrome.storage.sync.set({ "GamesList": savedTable }, function(){
         console.log('table saved');
@@ -49,8 +80,8 @@ function setNotificationStatusForGameOnPosition(position, status){
   });
 }
 
-async function showNotificationsTable(savedTable) {
-    var table = document.getElementById('notificationsTableBody');
+async function showSettingsTable(savedTable) {
+    var table = document.getElementById('settingsTableBody');
     for(let string=0; string < getAmountOfSavedGames(savedTable); string++) {
       const oneGameObject = savedTable[string];
       tr = table.insertRow(-1);
@@ -84,3 +115,15 @@ async function showNotificationsTable(savedTable) {
       }
     }
   }
+
+function refreshSettingsList() {
+    document.getElementById("settingsTableBody").innerHTML = "";
+    console.log('refresh start');
+    chrome.storage.sync.get(["GamesList"], async (result) => {
+        var savedTable = result["GamesList"];
+        if(savedTable) {
+          await showSettingsTable(savedTable);
+          console.log('refresh end');
+        }
+    });
+}

@@ -169,7 +169,9 @@ async function showSavedTable(savedTable) {
                       td.style.color = "red";
                     }
                     td.innerHTML = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(currentPrice);
-                  });
+                  }).catch(err => {
+					td.innerHTML = '-'
+				  });
                 break;
             }
             case 4:

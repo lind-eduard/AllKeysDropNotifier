@@ -9,6 +9,7 @@ function setGameName(gameName){
   if(gameName[0].result) {
     document.getElementById('gameNameToAdd').innerHTML = `Add "${gameName[0].result.trim()}" to list with max price:`;
   } else {
+    document.getElementById('wrongPageNotification').style.display = 'block';
     document.getElementById('addGameArea').style.display = 'none';
   }
 }
