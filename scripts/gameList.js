@@ -162,15 +162,22 @@ async function showSavedTable(savedTable) {
                 await fetch(`https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameID}&currency=eur&region=&moreq=&use_beta_offers_display=1`)
                   .then(response => response.json())
                   .then(data => {
-                    var currentPrice = data.offers[0].price.eur.price;
-                    if(parseFloat(currentPrice) <= oneGameObject.price) {
-                      td.style.color = "green";
-                    } else {
-                      td.style.color = "red";
+                    for(let i=0; i< data.offers.length; i++) {
+                      if(!["412", "259", "25"].includes(data.offers[i].region)) {
+                        console.log(i)
+                        var currentPrice = data.offers[i].price.eur.priceWithoutCoupon;
+                        if(parseFloat(currentPrice) < oneGameObject.price) {
+                          td.style.color = "green";
+                        } else {
+                          td.style.color = "red";
+                        }
+                        td.innerHTML = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(currentPrice);
+                        return;
+                      }
                     }
-                    td.innerHTML = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(currentPrice);
                   }).catch(err => {
-					td.innerHTML = '-'
+                    console.log(err);
+					          td.innerHTML = '-';
 				  });
                 break;
             }
