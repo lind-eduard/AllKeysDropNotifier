@@ -99,7 +99,6 @@ function getAmountOfSavedGames( savedGames ) {
 }
 
 function refreshGameList() {
-    document.getElementById("savedGamesTableBody").innerHTML ="";
     chrome.storage.sync.get(["GamesList"], async (result) => {
         var savedTable = result["GamesList"];
         if(savedTable) {
@@ -133,7 +132,13 @@ function saveGame(gameId, gameName, highestPrice, gameLink) {
 }
 
 async function showSavedTable(savedTable) {
+    const spinner = document.getElementById('loadingSpinner');
+    const tableContainer = document.getElementById('tableContainer');
+    spinner.style.display = 'block'; // Show spinner
+    tableContainer.style.display = 'none'; // Hide table
+
     var table = document.getElementById('savedGamesTableBody');
+    table.innerHTML = "";
     for(let string=0; string < getAmountOfSavedGames(savedTable); string++) {
       const oneGameObject = savedTable[string];
       var gameID = oneGameObject.id;
@@ -164,7 +169,6 @@ async function showSavedTable(savedTable) {
                   .then(data => {
                     for(let i=0; i< data.offers.length; i++) {
                       if(!["412", "259", "25"].includes(data.offers[i].region)) {
-                        console.log(i)
                         var currentPrice = data.offers[i].price.eur.priceWithoutCoupon;
                         if(parseFloat(currentPrice) < oneGameObject.price) {
                           td.style.color = "green";
@@ -177,8 +181,8 @@ async function showSavedTable(savedTable) {
                     }
                   }).catch(err => {
                     console.log(err);
-					          td.innerHTML = '-';
-				  });
+                    td.innerHTML = '-';
+                  });
                 break;
             }
             case 4:
@@ -198,4 +202,6 @@ async function showSavedTable(savedTable) {
         } 
       }
     }
-  }
+    spinner.style.display = 'none'; // Hide spinner
+    tableContainer.style.display = 'block'; // Show table
+}
