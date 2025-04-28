@@ -57,24 +57,28 @@ function checkGamesAndSendNotification() {
         await fetch(`https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameID}&currency=eur&region=&moreq=&use_beta_offers_display=1`)
         .then(response => response.json())
         .then(data => {
-          var currentPrice = data.offers[0].price.eur.price;
-          var expectedPrice = parseFloat(oneGameObject.price);
-          if(parseFloat(currentPrice) <= expectedPrice && oneGameObject.notificationEnabled) {
-            chrome.notifications.create(gameID + `_${timestamp}`, {
-              title: 'Price just droped for game:',
-              message: `${gameName}`,
-              iconUrl: '/icon.png',
-              type: 'basic',
-              buttons: [
-                {
-                    title: 'Open'
-                },
-                {
-                    title: 'Close'
-                }
-            ]
-            });
+          for(let i=0; i< data.offers.length; i++) {
+            if(!["412", "259", "25"].includes(data.offers[i].region)) {
+              var currentPrice = data.offers[i].price.eur.priceWithoutCoupon
             }
+          }
+          var expectedPrice = parseFloat(oneGameObject.price);
+              if(parseFloat(currentPrice) <= expectedPrice && oneGameObject.notificationEnabled) {
+              chrome.notifications.create(gameID + `_${timestamp}`, {
+                title: 'Price just droped for game:',
+                message: `${gameName}`,
+                iconUrl: '/icon.png',
+                type: 'basic',
+                buttons: [
+                  {
+                      title: 'Open'
+                  },
+                  {
+                      title: 'Close'
+                  }
+              ]
+              });
+              }
         });
     }
 });
