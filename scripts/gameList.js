@@ -1,7 +1,8 @@
+import { fetchPricesFromPage } from './scripts/parser.js';
+
 document.addEventListener('DOMContentLoaded', function() {
     let gameIdString;
     let gameId;
-
     // add new game to list
     const addGameButton = document.getElementById('addGameAlert');
     addGameButton.addEventListener('click',async function() { 
@@ -164,8 +165,7 @@ async function showSavedTable(savedTable) {
             {
                 var td = document.createElement('td');
                 td = tr.insertCell(-1);
-                await fetch(`https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameID}&currency=eur&region=&moreq=&use_beta_offers_display=1`)
-                  .then(response => response.json())
+                await fetchPricesFromPage(`https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameID}&currency=eur&region=&moreq=&use_beta_offers_display=1`)
                   .then(data => {
                     for(let i=0; i< data.offers.length; i++) {
                       if(!["412", "259", "25"].includes(data.offers[i].region)) {

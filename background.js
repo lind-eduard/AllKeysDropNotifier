@@ -1,5 +1,6 @@
 var gameLink;
 var myNotificationID;
+import { fetchPricesFromPage } from './scripts/parser.js';
 
 chrome.runtime.onStartup.addListener(function() {
   checkGamesAndSendNotification();
@@ -54,8 +55,7 @@ function checkGamesAndSendNotification() {
         var gameID = oneGameObject.id;
         var gameName = oneGameObject.name;
         gameLink = oneGameObject.link;
-        await fetch(`https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameID}&currency=eur&region=&moreq=&use_beta_offers_display=1`)
-        .then(response => response.json())
+        await fetchPricesFromPage(`https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameID}&currency=eur&region=&moreq=&use_beta_offers_display=1`)
         .then(data => {
           for(let i=0; i< data.offers.length; i++) {
             if(!["412", "259", "25"].includes(data.offers[i].region)) {
