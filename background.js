@@ -1,5 +1,4 @@
 var gameLink;
-var myNotificationID;
 import { fetchPricesFromPage } from './scripts/parser.js';
 
 chrome.runtime.onStartup.addListener(function() {
@@ -22,7 +21,6 @@ chrome.alarms.onAlarm.addListener(function(){
 
 chrome.notifications.onButtonClicked.addListener(function(notifId, btnIdx) {
   const gameIdFromNotification = notifId.slice(0, notifId.indexOf('_'));
-  console.log('ID: ', gameIdFromNotification)
   if (btnIdx === 0) {
       chrome.storage.sync.get(["GamesList"], async (result) => {
         var savedTable = result["GamesList"];
@@ -55,11 +53,11 @@ function checkGamesAndSendNotification() {
         var gameID = oneGameObject.id;
         var gameName = oneGameObject.name;
         gameLink = oneGameObject.link;
-        await fetchPricesFromPage(`https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameID}&currency=eur&region=&moreq=&use_beta_offers_display=1`)
+        await fetchPricesFromPage(gameLink)
         .then(data => {
-          for(let i=0; i< data.offers.length; i++) {
-            if(!["412", "259", "25"].includes(data.offers[i].region)) {
-              var currentPrice = data.offers[i].price.eur.priceWithoutCoupon
+          for(let i=0; i< data.length; i++) {
+            if(!["412", "259", "25"].includes(data[i].region) && !data[i].account && data[i].priceCard > 1) {
+              var currentPrice = data[i].priceCard;
             }
           }
           var expectedPrice = parseFloat(oneGameObject.price);
@@ -83,9 +81,3 @@ function checkGamesAndSendNotification() {
     }
 });
 }
-
-chrome.webNavigation.onCommitted.addListener((details) => {
-  if (["reload", "link", "typed", "generated"].includes(details.transitionType)) {
-      console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-  }
-});

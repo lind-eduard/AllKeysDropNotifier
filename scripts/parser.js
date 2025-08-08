@@ -1,4 +1,4 @@
-async function fetchPricesFromPage(link) {
+export async function fetchPricesFromPage(link) {
     try {
         const response = await fetch(link);
         const contentType = response.headers.get("Content-Type");
@@ -22,7 +22,7 @@ async function fetchPricesFromPage(link) {
                     return null;
                 }
             } else {
-                console.log("No prices array found.");
+                console.log("No prices array found.", data);
                 return null;
             }
         } else {

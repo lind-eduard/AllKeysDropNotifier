@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
       if (target.tagName.toLowerCase() === 'input') {
         var cellOfButton = event.target.parentNode;
         var position = cellOfButton.parentNode.parentNode.rowIndex;
-        console.log(target.checked);
         setNotificationStatusForGameOnPosition(position, target.checked);
       }
   }, false);
@@ -118,12 +117,10 @@ async function showSettingsTable(savedTable) {
 
 function refreshSettingsList() {
     document.getElementById("settingsTableBody").innerHTML = "";
-    console.log('refresh start');
     chrome.storage.sync.get(["GamesList"], async (result) => {
         var savedTable = result["GamesList"];
         if(savedTable) {
           await showSettingsTable(savedTable);
-          console.log('refresh end');
         }
     });
 }

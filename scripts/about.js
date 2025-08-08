@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const savedTable = result["GamesList"];
             if (savedTable && savedTable.length > 0) {
                 chrome.storage.sync.set({ "GamesListBackup": savedTable }, function () {
-                    console.log('Backup saved successfully.');
                     alert('Backup has been created successfully!');
                 });
             } else {
@@ -21,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const backupTable = result["GamesListBackup"];
             if (backupTable && backupTable.length > 0) {
                 chrome.storage.sync.set({ "GamesList": backupTable }, function () {
-                    console.log('Backup loaded successfully.');
                     alert('Backup has been restored successfully!');
                 });
             } else {

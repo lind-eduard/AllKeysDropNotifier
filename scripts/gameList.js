@@ -1,5 +1,5 @@
-import { fetchPricesFromPage } from './scripts/parser.js';
-
+import { fetchPricesFromPage } from './parser.js';
+ 
 document.addEventListener('DOMContentLoaded', function() {
     let gameIdString;
     let gameId;
@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const addGameButton = document.getElementById('addGameAlert');
     addGameButton.addEventListener('click',async function() { 
         var highestPrice = document.getElementById('lowestPriceInput').value;
-        console.log(document.getElementById('gameNameToAdd').innerHTML)
         var gameLabel = (document.getElementById('gameNameToAdd').innerHTML).match('\"(.*?)\"');
         var gameName = gameLabel[1].trim();
         document.getElementById('lowestPriceInput').value = "";
@@ -88,7 +87,6 @@ document.addEventListener('DOMContentLoaded', function() {
       });
       }
       reader.onerror = function(error) {
-        console.log("error", error)
         console.log (error.getMessage())
       }
     }, false);
@@ -133,6 +131,7 @@ function saveGame(gameId, gameName, highestPrice, gameLink) {
 }
 
 async function showSavedTable(savedTable) {
+    let tr;
     const spinner = document.getElementById('loadingSpinner');
     const tableContainer = document.getElementById('tableContainer');
     spinner.style.display = 'block'; // Show spinner
@@ -142,7 +141,6 @@ async function showSavedTable(savedTable) {
     table.innerHTML = "";
     for(let string=0; string < getAmountOfSavedGames(savedTable); string++) {
       const oneGameObject = savedTable[string];
-      var gameID = oneGameObject.id;
       tr = table.insertRow(-1);
       tr.setAttribute('id', 'gameRow');
       for(let column=1; column < 5; column++) {
@@ -165,11 +163,11 @@ async function showSavedTable(savedTable) {
             {
                 var td = document.createElement('td');
                 td = tr.insertCell(-1);
-                await fetchPricesFromPage(`https://www.allkeyshop.com/blog/wp-admin/admin-ajax.php?action=get_offers&product=${gameID}&currency=eur&region=&moreq=&use_beta_offers_display=1`)
+                await fetchPricesFromPage(oneGameObject.link)
                   .then(data => {
-                    for(let i=0; i< data.offers.length; i++) {
-                      if(!["412", "259", "25"].includes(data.offers[i].region)) {
-                        var currentPrice = data.offers[i].price.eur.priceWithoutCoupon;
+                    for(let i=0; i< data.length; i++) {
+                      if(!["412", "259", "25"].includes(data[i].region) && !data[i].account && data[i].priceCard > 1) {
+                        var currentPrice = data[i].priceCard;
                         if(parseFloat(currentPrice) < oneGameObject.price) {
                           td.style.color = "green";
                         } else {
