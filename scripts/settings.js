@@ -7,7 +7,12 @@ document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.sync.set({ "notificationPeriod": parseFloat(newNotificationPeriod) }, async function(){
       showNotificationPeriod();
       chrome.alarms.clear("gameCheckAlarm");
-      await chrome.alarms.create("gameCheckAlarm", {delayInMinutes: parseFloat(newNotificationPeriod), periodInMinutes: parseFloat(newNotificationPeriod)});
+      chrome.storage.sync.get(["autoCheckEnabled"], async (result) => {
+        const autoCheckEnabled = result["autoCheckEnabled"];
+        if (autoCheckEnabled !== false) {
+          await chrome.alarms.create("gameCheckAlarm", {delayInMinutes: parseFloat(newNotificationPeriod), periodInMinutes: parseFloat(newNotificationPeriod)});
+        }
+      });
     });
   }, false);
 
@@ -67,7 +72,40 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }, false);
 
+  // load settings on page load
+  loadSettings();
+
 }, false);
+
+function loadSettings() {
+  chrome.storage.sync.get(["autoCheckEnabled"], (result) => {
+    const autoCheckEnabled = result["autoCheckEnabled"];
+    const checkbox = document.getElementById('autoCheckEnabled');
+    if (autoCheckEnabled === false) {
+      checkbox.checked = false;
+    } else {
+      checkbox.checked = true;
+    }
+    checkbox.addEventListener('change', function() {
+      chrome.storage.sync.set({ "autoCheckEnabled": checkbox.checked }, function(){
+        console.log('auto check setting saved');
+        if (checkbox.checked) {
+          chrome.storage.sync.get(["notificationPeriod"], async (result) => {
+            var notificationPeriodInMinutes = result["notificationPeriod"];
+            if(!notificationPeriodInMinutes) {
+              notificationPeriodInMinutes = 180.0;
+            }
+            chrome.alarms.clear("gameCheckAlarm");
+            await chrome.alarms.create("gameCheckAlarm", {delayInMinutes: parseFloat(notificationPeriodInMinutes), periodInMinutes: parseFloat(notificationPeriodInMinutes)});
+          });
+        } else {
+          chrome.alarms.clear("gameCheckAlarm");
+        }
+      });
+    });
+  });
+  showNotificationPeriod();
+}
 
 function setNotificationStatusForGameOnPosition(position, status){
   chrome.storage.sync.get(["GamesList"], (result) => {
@@ -123,4 +161,34 @@ function refreshSettingsList() {
           await showSettingsTable(savedTable);
         }
     });
+}
+
+function loadSettings() {
+  chrome.storage.sync.get(["autoCheckEnabled"], (result) => {
+    const autoCheckEnabled = result["autoCheckEnabled"];
+    const checkbox = document.getElementById('autoCheckEnabled');
+    if (autoCheckEnabled === false) {
+      checkbox.checked = false;
+    } else {
+      checkbox.checked = true;
+    }
+    checkbox.addEventListener('change', function() {
+      chrome.storage.sync.set({ "autoCheckEnabled": checkbox.checked }, function(){
+        console.log('auto check setting saved');
+        if (checkbox.checked) {
+          chrome.storage.sync.get(["notificationPeriod"], async (result) => {
+            var notificationPeriodInMinutes = result["notificationPeriod"];
+            if(!notificationPeriodInMinutes) {
+              notificationPeriodInMinutes = 180.0;
+            }
+            chrome.alarms.clear("gameCheckAlarm");
+            await chrome.alarms.create("gameCheckAlarm", {delayInMinutes: parseFloat(notificationPeriodInMinutes), periodInMinutes: parseFloat(notificationPeriodInMinutes)});
+          });
+        } else {
+          chrome.alarms.clear("gameCheckAlarm");
+        }
+      });
+    });
+  });
+  showNotificationPeriod();
 }
